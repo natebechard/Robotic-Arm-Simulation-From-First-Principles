@@ -1,7 +1,6 @@
-Hello, World!
 
-<img width="1399" alt="poster" src="https://user-images.githubusercontent.com/40401530/235377502-b19611be-ae04-42fc-89be-2d826eca8374.png">
+<img width="1393" alt="underpowered negative" src="https://github.com/natebechard/Robotic-Arm-Simulation-From-First-Principles/assets/40401530/88804ba3-529a-4750-8698-56a054489581">
 
+https://github.com/natebechard/Robotic-Arm-Simulation-From-First-Principles/assets/40401530/7dfe96cd-4b89-44c9-85b7-6e967548d9bf
 
-https://user-images.githubusercontent.com/40401530/235377521-7c20f8e0-76fc-4459-9fef-303dbe1dee76.mp4
 

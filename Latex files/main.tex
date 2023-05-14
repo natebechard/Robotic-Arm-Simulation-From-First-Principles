@@ -5,11 +5,9 @@
 \usepackage{listings}
 \usepackage{amsmath}
 \usepackage{tabularx}
-\usepackage{hyperref}
-\usepackage{biblatex} %Imports biblatex package
-\addbibresource{sample.bib} %Import the bibliography file
 \usepackage{ragged2e}
-
+\usepackage{caption}
+\usepackage{hyperref}
 
 \lstset{ 
     language=Python, % choose the language of the code
@@ -33,11 +31,9 @@
     escapechar=! % set the escape character
 }
 
-
-
-\title{Robotic Arm Position Simulation - A First Principles Analysis}
+\title{Robotic Arm Dynamics Simulation - A First Principles Analysis}
 \author{Nathaniel Bechard, Ivan T. Ivanov}
-\date{April 30, 2023}
+\date{May 23, 2023}
 
 \begin{document}
 
@@ -45,12 +41,12 @@
 \tableofcontents % Generates the contents page
 
 \section{Abstract}
-Robotic arms are one of the most common projects for makers and hobbyists. While extensive modeling and simulation is done for robotic arms in industry, hobbyists tend to shy away from simulation. This makes the transition from the hobby world to the industrial one difficult. If hobbyists have a comprehensive and simple explanation of robotic arm modeling, they will become accustomed to mathematical modeling and may come to find it enjoyable. 
+This paper provides an explanation of how to model robotic arm joints; it requires readers to possess knowledge of Newtonian mechanics and ordinary differential equations. It begins with the simple 1-joint problem, which models the behavior of one mass rotated by a motor. Next, the model is generalized for a system with n joints, the robot arm.
 
-\newpage
+%
 
 \section{Introduction}
-This paper provides an explanation of how to model robotic arm joints; it requires readers to possess knowledge of Newtonian mechanics and ordinary differential equations. It begins with the simple 1-joint problem, which models the behavior of one mass rotated by a motor. Next, the model is generalized for a system with n joints, the robot arm.
+Robotic arms are a useful part of modern industry. Most of the products we own have been touched at one time or another by a robotic arm during their manufacturing and shipping processes. Many people are captivated by the lifelike movements of these machines. Robotic arms have therefore become a common project for hobbyists and aspiring engineers. People in these circles enjoy the challenge of designing, building, and programming a robot arm themselves. While extensive modeling and simulation are done for robotic arms in industry, hobbyists tend to shy away from simulation. This makes the transition from the hobby world to the industrial one difficult. With a comprehensive and simple explanation of robotic arm modeling, starting from first principles, they will become accustomed to mathematical modeling and may come to find it enjoyable. For those taking their first differential equations course after completing Calculus 2, this paper demonstrates how a nonlinear differential equation has complex emergent properties, which have not yet been seen in our mathematical careers. Differential equations is a field where the dynamics of an equation can be explored, as opposed to being solved analytically or memorized.
 
 \section{The 1-joint problem}
 In this section, the equations of motion for a single motor, with a single mass, will be derived. The motor applies a torque $\tau_{app}(t)$ on a massless rod of length L. A point mass with a mass $m_1$ is connected to the end of the rod. 
@@ -80,6 +76,7 @@ In this section, the equations of motion for a single motor, with a single mass,
 
 \vspace{24pt}
 
+\newpage
 
 \subsection{Deriving the equations of motion for the 1 joint problem}
 
@@ -102,8 +99,6 @@ In this section, the equations of motion for a single motor, with a single mass,
 \centering $\sum_i \tau_i = \tau_{app}(t) - m_1gLcos(\theta(t))L$
 
 \vspace{24pt}
-
-\newpage
 
 \noindent \justifying The rotational inertia term, I, can be rewritten as $m_1*L^2$, and the angular acceleration can be turned into the second derivative of the angular position. After reorganizing terms, we get:
 \vspace{24pt}
@@ -135,10 +130,8 @@ In this section, the equations of motion for a single motor, with a single mass,
 
 %FBD's, theory, results in a 2nd order, non-homogeneous, nonlinear Ordinary differential equation. 
 
-\newpage
-
 \subsection{Programming the 1 joint problem}
-While the code can be accessed on \textcolor{blue}{\href{https://github.com/natebechard/Robotic-Arm-Simulation-From-First-Principles/blob/main/1_joint_problem.py}{GitHub here}}, an explanation of the important parts of the code is in this document. 
+While the code can be accessed on \textcolor{blue}{\href{https://github.com/natebechard/Robotic-Arm-Simulation-From-First-Principles/blob/main/1_joint_problem.py}{GitHub here}}, explanations of the main parts of the code are in this document. 
 
 \vspace{24pt}
 
@@ -184,7 +177,7 @@ for x in range(len(sol.y[0])):
 \end{lstlisting}
 
 \vspace{24pt}
-\newpage 
+% 
 
 \noindent \justifying Finally, the solution is animated. The angular position of the system over time is converted to an easy-to-plot vector of Cartesian coordinates. These are fed through an animation of the 1-joint problem. 
 \vspace{24pt}
@@ -213,13 +206,15 @@ frames=len(x1), interval=10, blit=True)
 plt.show()
 \end{lstlisting}
 
-\newpage
-
 \subsection{Some Examples...}
-\noindent \justifying Before moving on to multi-joint systems, let's investigate the properties of the one-joint system. The differential equation for this system provides valuable insight not visible with a formulaic understanding of mechanics. 
+\noindent \justifying Before moving on to multi-joint systems, let's investigate the properties of the one-joint system. The differential equation for this system provides valuable insight not understandable with a formulaic understanding of mechanics. Note that the arrows in the diagrams are normalized. 
+
+\newpage
 
 \paragraph{No torque}
 When the motor has no torque, the system behaves as a simple pendulum. It creates the characteristic whirlpool vector field. 
+
+\vspace{14pt}
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|c|}
@@ -234,16 +229,19 @@ Friction & 0.2 \\
 \end{tabular}
 \label{tab:quantities}
 \end{table}
-\begin{figure}[!h]
-  \makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{pendulum vector field.png}}%
-  \caption{Vector field of a pendulum}
-  \label{fig:key}
-\end{figure}
+
+\centering The whirlpools happen every 2$\pi$ radians, and they are centered around -$\pi/2$, where the arm is vertically downwards. When the system is in the whirlpool, it is oscillating back and forth as a pendulum. If there is enough initial velocity, such as on the green Initial Value Problem, the pendulum makes a few full rotations before entering a whirlpool.
+%In the Blue Initial Value Problem, the pendulum starts horizontally, and with zero velocity. In the Or
+
+\begin{center}
+\makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{pendulum vector field_with_IVP.png}}%
+\captionof{figure}{Vector field of a pendulum}\label{labelname}%
+\end{center}
 
 \newpage
 
 \paragraph{Damped-driven 1-joint problem}
-Here, the mass is acted on by a torque of 50Nm. This is just enough to make it overcome the force of gravity: $9.81N * 5m = 49.05Nm$ when the bar is horizontal. The mass accelerates until it reaches $4\pm0.5\frac{rad}{s}$. This is the terminal velocity of the system, where the energy input by the motor is consumed entirely by friction. The steady-state velocity will vary between 4 and 5 radians per second, depending on whether it is fighting gravity or working with it. 
+Here, the mass is acted on by a torque of 50Nm. This is just enough to make it overcome the force of gravity ($9.81N * 5m = 49.05Nm$ when the bar is horizontal). The mass accelerates until it reaches $4\pm0.5\frac{rad}{s}$. This is the terminal velocity of the system, where the energy input by the motor is consumed entirely by friction. The steady-state velocity will vary between 4 and 5 radians per second, depending on whether the motor is fighting gravity or working with it. 
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|c|}
@@ -253,22 +251,25 @@ System property & \\
 Length (L) & 5 m \\
 Mass1 ($m_1$) & 1 kg \\
 Torque & 50 Nm \\
-Friction & 0.5 \\
+Friction & 0.5 \\ %https://www.overleaf.com/project/644475bf470f305429746a86
 \hline
 \end{tabular}
 \label{tab:quantities}
 \end{table}
-\begin{figure}[!h]
-  \makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{damped driven pendulum.png}}%
-  \caption{Vector field of a driven 1-joint system}
-  \label{fig:key}
-\end{figure}
 
+\centering 3 cases are plotted on this diagram. The first (in blue) shows a bar with zero velocity starting in a horizontal position. It accelerates slowly until it reaches a quasi-sinusoidal steady state. The second (in green) shows a negative initial velocity, while the bar is still horizontal. The bar decelerates until it reaches zero velocity, then it climbs to the same steady state as the first case. The third case starts with a velocity slightly above the steady state. It decreases slowly and approaches the steady state.
+
+\begin{center}
+\makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{Damped driven vector field}}%
+\captionof{figure}{Vector field of a driven system}\label{labelname}%
+\end{center}
+
+%
 \newpage
-
 \paragraph{Under-Powered Motor} 
-When the motor doesn't have enough power to counter the force of gravity, it will not start spinning the mass. However, the wells of the vector field can be escaped with enough potential or kinetic energy. This will result in the mass rotating forever. Notice that the centers of the wells are at $-\pi/2 + 2\pi n$, with an angular velocity of zero. This is a state with no potential energy, where the arm is pointing downwards. When velocity is high enough above the well, or the position is far enough from downwards, the solution diverges. 
-\begin{table}[h]
+When the motor does not have enough power to counter the force of gravity, it will not start spinning the mass. However, the wells of the vector field can be escaped with enough potential or kinetic energy. This will result in the mass rotating forever. Notice that the centers of the wells are slightly ahead of  $-\pi/2 + 2\pi n$, at an angular velocity of zero. When the system is in the center of a well, the torque exerted by the motor and the torque exerted by gravity cancel out. The arm is left skewed from the vertical.
+\vspace{14pt}
+
 \centering
 \begin{tabular}{|l|c|}
 \hline
@@ -276,17 +277,36 @@ System property & \\
 \hline
 Length (L) & 1 m \\
 Mass1 ($m_1$) & 1 kg \\
-Torque & 7 Nm \\
+Torque & 4 Nm \\
 Friction & 0.2 \\
 \hline
 \end{tabular}
 \label{tab:quantities}
-\end{table}
-\begin{figure}[!h]
-  \makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{undertorqued problem.png}}%
-  \caption{Vector field of a pendulum}
-  \label{fig:key}
-\end{figure}
+%\end{table}
+
+\vspace{14pt}
+
+\centering On this plot, three initial positions are set. The orange and blue cases do not have enough initial potential energy to escape the well. The orange case starts vertically downwards, while the blue one starts at $-3\pi/4$ radians. The green line starts at $-\pi$ radians and manages to escape the well. Once it does, the mass rotates forever. 
+
+\begin{center}
+\makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{underpowered different positions.png}}%
+\captionof{figure}{Vector field of an under-powered system, with differing initial positions}\label{labelname}%
+\end{center}
+
+\centering On this plot, three initial velocities are set, while the initial position is always horizontal. The orange and blue cases do not have enough initial kinetic energy to clear the vertical and escape the well. The orange spiral remains relatively round and the blue spiral displays an anomaly when it first falls into the well. It almost clears the vertical, but has slightly too little energy to do so, so it slowly falls back down into the well. With a slightly higher initial velocity, the green line clears the well and rotates perpetually. 
+
+\begin{center}
+\makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{underpowered positive velocity.png}}%
+\captionof{figure}{Vector field of an under-powered system, with differing positive initial velocities}\label{labelname}%
+\end{center}
+
+\newpage
+\centering When the initial velocity is negative, the torque of the motor opposes the direction of motion, and the system decelerates. Depending on its trajectory, the system will either fall into a well, or it will cross the x-intercept only once (come to a full stop). If it crosses the x-intercept once, it operates with the same dynamics as Figure 3. Notice that the orange and green trajectories avoid the well and cross the x-intercept. Their x-intercept positions are such that they have enough potential energy to begin spinning. The blue trajectory falls into a well. 
+
+\begin{center}
+\makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{underpowered negative.png}}%
+\captionof{figure}{Vector field of an under-powered system, with differing negative initial velocities}\label{labelname}%
+\end{center}
 
 
 \section{The robot arm}
@@ -335,7 +355,7 @@ Friction & 0.2 \\
 \end{tikzpicture}
 
 \vspace{14pt}
-\noindent \justifying Note that $\tau_1 = \tau_1(t)$, time dependencies have been removed for simplicity. 
+\noindent \justifying Note that $\tau_1 = \tau_1(t)$. Time dependencies have been removed for simplicity. 
 \vspace{14pt}
 
 \subsection{Deriving the equations of motion for an arbitrary number of sequential 1-joint problems}
@@ -346,29 +366,40 @@ Friction & 0.2 \\
 \centering $I_a = m_nL_{a,mn}^2 + m_{n-1}L_{a,mn-1}^2 ... + m_aL_a^2$ ,
 \vspace{24pt}
 
-\noindent \justifying where $I_a$ is the inertia calculated with respect to joint A, and $L_{a,mn}$, is the distance from joint a to the last mass. $L_{a,mn-1}$ is the distance from joint a to the second last mass. Only masses past the joint count toward its rotational inertia. The lengths used in the inertia formula are computed by treating the 1 joint problems downstream of the joint as  vectors of magnitude $L_i$ and direction $\theta_i$. These vectors can be summed to calculate the net vector. The vector below is computed from joint a (which we're calculating the inertia WRT to) to joint b, a joint we're trying to find the distance to. 
+\noindent \justifying where $I_a$ is the inertia calculated with respect to joint a, and $L_{a,mn}$, is the distance from joint a to the last mass. $L_{a,mn-1}$ is the distance from joint a to the second last mass. Only masses past the joint count toward its rotational inertia. 
+
+\noindent \justifying The lengths used in the inertia formula are computed by treating the 1 joint problems downstream of the joint as  vectors of magnitude $L_i$ and direction $\theta_i$. These vectors can be summed to calculate the net vector. The vector $\vec{u}_{a,b}$ is computed from joint a (which we're calculating the inertia WRT to) to joint b, a joint we're trying to find the distance to. $\vec{u}_{a,b}$'s magnitude is $L_{a,mb}$. 
 
 \vspace{24pt}
-\centering $\vec{v}_{a,b} = J_a + J_{a+1} + ... + J_b$,
+\centering $\vec{u}_{a,b} = J_a + J_{a+1} + ... + J_b$,
 \vspace{14pt}
 
 \indent where $J_a =  \begin{bmatrix} L_acos(\theta_a) \\ L_asin(\theta_a) \end{bmatrix}$ 
- \hspace{1cm}   $|\vec{v}_{a,b}| = L_{a,b}$  \hspace{1cm} $\hat v_{a,b} = \theta_{a,b}$
- \vspace{24pt}
- \newpage
+\hspace{1cm}   $|\vec{u}_{a,b}| = L_{a,b}$  \hspace{1cm} $\hat u_{a,b} = \theta_{a,b}$
+\vspace{24pt}
+ 
+$L_a$ denotes the length of joint a, and $\theta_a$ denotes the angle of joint a. 
 
-The rotational inertia with respect to a joint in the system can be computed from this.
+
+
+The rotational inertia with respect to a joint in the system is computed from this. It is computed starting at the last joint, and ending at joint a. The closest joint's inertia is not computed by vector sum, since it is just one segment. 
 
 \vspace{24pt}
-\centering $I_a = m_n|\vec{v}_{a,n}|^2 + m_{n-1}|\vec{v}_{a,n-1}|^2 + ... + m_AL_A^2$
+
+\centering $I_a = m_n|\vec{u}_{a,n}|^2 + m_{n-1}|\vec{u}_{a,n-1}|^2 + ... + m_{a+1}|\vec{u}_{a,a+1}|^2 + m_AL_A^2$
+
 \vspace{14pt}
 
+$m_n$ is the last joint in the arm, $m_{n-1}$ is the second last, and so on. $|\vec{u}_{a,a+1}|$ is the magnitude of a vector between joint a and joint a+1.
 
 \paragraph{torque applied by gravity} 
 With the quantities just developed, the torque applied by gravity WRT to joint a can be computed:
 \vspace{24pt}
 
-$\tau_a = m_a*L_{a}*cos(\theta_a)*g + m_{a+1}*L_{a,a+1}*cos(\theta_{a,a+1})*g + ... + m_{b}*L_{a,b}*cos(\theta_{a1,b})*g$
+$\tau_a = m_a*L_{a}*cos(\theta_a)*g + m_{a+1}*L_{a,a+1}*cos(\theta_{a,a+1})*g + ... + m_{n}*L_{a,n}*cos(\theta_{a,n})*g$
+
+\vspace{24pt}
+Here $\theta_{a,b}$ is the direction of $|\vec{u}_{a,b}|$. This tells us the angle at which the force of gravity is applied to the joint. This is used to compute the effect that gravity has on the torque of the joint. 
 
 \vspace{24pt}
 
@@ -398,7 +429,7 @@ $\tau_a = m_a*L_{a}*cos(\theta_a)*g + m_{a+1}*L_{a,a+1}*cos(\theta_{a,a+1})*g + 
 
 \vspace{24pt}
 
-\newpage 
+\newpage
 
 \subsection{Programming and simulating the robot arm}
 
@@ -433,6 +464,7 @@ def slopes(t, Input):     # Y is a vector of shape [x1, x2,..., xn]
 Note: sn is the number of segments in the arm
 
 \newpage
+
 \vspace{24pt}
 \noindent \justifying The simulation parameters are now vectorized, and they can be of an arbitrary length:
 \vspace{24pt}
@@ -457,18 +489,55 @@ The animation code is very similar to the 1-joint problem. The full code can be 
 \subsection{Simulations}
 The n-joint arm exhibits interesting behavior. It can be played with extensively using the source code \textcolor{blue}{\href{https://github.com/natebechard/Robotic-Arm-Simulation-From-First-Principles/blob/main/n_joints_constant_torque.py}{here}}
 
-- Inertia demo
-- double and triple pendulums
+\paragraph{Inertia demo}
+A 2-joint system can be used to model how an ice skater's angular velocity changes when she tucks her arms in. In this simulation, the friction terms have been exaggerated so that the effect of changing inertia on the system is more visible. The system has these parameters:
 
-\section{Experiment Ideas}
-- Torque as a function
-- let the joints act as an arm
-- Nick's DC motor integrated in the ODE
+\vspace{14pt}
+
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+System property & Joint 1 & Joint 2\\
+\hline
+Length & 1.0 m & 0.7 m\\
+Mass & 1 kg & 3 kg\\
+Torque & 45 Nm & 45 Nm \\
+Friction & 1.2 & 2 \\
+\hline
+\end{tabular}
+\label{tab:quantities}
+
+\vspace{14pt}
+
+From \textcolor{green}{\href{https://github.com/natebechard/Robotic-Arm-Simulation-From-First-Principles/blob/main/inertia_demo.mp4}{this video}}, it is clear that the angular velocity of the central joint increases when the outer joint points inwards. 
+
+%\paragraph{Demo #2}
+
+\newpage
+\subsection{Torque as a function}
+\noindent \justifying Torque can easily be passed through the solver as a function of time. This is accomplished by turning the static torque array into a small function. This function then replaces the array in the differential equation input/output function. 
+
+\begin{lstlisting}[language=Python]
+def compute_torque(t):
+    Torques = [100*t, 0, 0, 0]
+    return(Torques)
+
+# this function replaces the otherwise static Torques[x] wherever it is found in the I/O function. 
+\end{lstlisting}
+
+\vspace{24pt}
 
 \section{Conclusion}
-\noindent \justifying The dynamics of a robot arm can be deconstructed into simple one-joint problems, which are 2nd order differential equations derived from basic laws of physics. The simulation of an arm is a demonstration of how a model based on basic laws, such as $F = ma$ and $\tau_g = mgrsin(\theta)$ can generate intricate emergent behavior. To a reader entering the field of engineering, this paper demonstrates a transition from rudimentary mathematical formulas, with no clear use in the real world, to real-world models that deepen our understanding of the universe. This will hopefully reveal the beauty of mathematics to hobbyists and makers. 
+\noindent \justifying The dynamics of a robot arm on a 2D plane have been explained and modeled in this paper. The code and theory developed here can be used in any robot arm project. The final version of the code, which models the dynamics of an arm with an arbitrary number of joints, can be found \textcolor{blue}{\href{https://github.com/natebechard/Robotic-Arm-Simulation-From-First-Principles/blob/main/full_arm.py}{here}}. There are a few applications for this simulation code. It can be used to train machine learning algorithms to use robot arms. It can also be used, more practically, in programs that control robot arms. Most robot arms use servo motors to actuate their joints. A model like this one could give the computer a better idea of how the robot arm will move when the current supplied to the servo changes. There remains much work to be done to create a more useful model of the dynamics of an arm. First, a model that describes real motors, instead of the constant torque actuators used in the paper, can be used to model the arm dynamics. Next, a friction model that includes static friction instead of just dynamic friction can be included in the system. Overall, this paper demonstrates how the dynamics of a robot arm can be deconstructed into simple one-joint problems, which are 2nd order differential equations derived from basic laws of physics. The simulation of an arm is a demonstration of how a model based on basic laws, such as $F = ma$ and $\tau_g = mgrsin(\theta)$ can generate intricate emergent behavior. To a reader entering the field of engineering, this paper demonstrates a transition from rudimentary mathematical formulas, with no versatile use in the real world, to real-world models that deepen our understanding of the universe. This will hopefully reveal the beauty of mathematics to hobbyists and makers. 
+
+\newpage
 
 \centering \section{References}
-\centering To discuss with teacher
+
+[1] Ling, S. J., Sanny, J., \& Moebs, W. (2021). University physics. OpenStax, Rice University.
+
+\vspace{14pt}
+
+[2] Boyce, W. E., DiPrima, R. C. (1986). Elementary differential equations and boundary value problems (Vol. 4). John Wiley \& Sons. 
 
 \end{document}

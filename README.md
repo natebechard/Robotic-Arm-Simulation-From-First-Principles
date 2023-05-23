@@ -1,5 +1,5 @@
 # Robotic Arm Simulation From First Principles
-### This was completed as a final project for Differential Equations at Vanier College, supervised by Ivan Ivanov. 
+### This was completed as a final project for Vanier college's Differential Equations course taught by Ivan Ivanov.
 
 ## Abstract
 This paper provides an explanation of how to model robotic arm joints; it requires readers to possess knowledge of Newtonian mechanics and ordinary differential equations. It begins with the simple 1-joint problem, which models the behavior of one mass rotated by a motor. Next, the model is generalized for a system with n joints, the robot arm. 

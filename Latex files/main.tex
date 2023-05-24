@@ -32,7 +32,7 @@
 }
 
 \title{Robotic Arm Dynamics Simulation - A First Principles Analysis}
-\author{Nathaniel Bechard, Ivan T. Ivanov}
+\author{Nathaniel Bechard}
 \date{May 23, 2023}
 
 \begin{document}
@@ -234,7 +234,7 @@ Friction & 0.2 \\
 %In the Blue Initial Value Problem, the pendulum starts horizontally, and with zero velocity. In the Or
 
 \begin{center}
-\makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{pendulum vector field_with_IVP.png}}%
+\makebox[\textwidth][c]{\includegraphics[width=1.32\textwidth]{pendulum vector field_with_IVP.png}}%
 \captionof{figure}{Vector field of a pendulum}\label{labelname}%
 \end{center}
 
@@ -242,6 +242,7 @@ Friction & 0.2 \\
 
 \paragraph{Damped-driven 1-joint problem}
 Here, the mass is acted on by a torque of 50Nm. This is just enough to make it overcome the force of gravity ($9.81N * 5m = 49.05Nm$ when the bar is horizontal). The mass accelerates until it reaches $4\pm0.5\frac{rad}{s}$. This is the terminal velocity of the system, where the energy input by the motor is consumed entirely by friction. The steady-state velocity will vary between 4 and 5 radians per second, depending on whether the motor is fighting gravity or working with it. 
+
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|c|}
@@ -260,14 +261,37 @@ Friction & 0.5 \\ %https://www.overleaf.com/project/644475bf470f305429746a86
 \centering 3 cases are plotted on this diagram. The first (in blue) shows a bar with zero velocity starting in a horizontal position. It accelerates slowly until it reaches a quasi-sinusoidal steady state. The second (in green) shows a negative initial velocity, while the bar is still horizontal. The bar decelerates until it reaches zero velocity, then it climbs to the same steady state as the first case. The third case starts with a velocity slightly above the steady state. It decreases slowly and approaches the steady state.
 
 \begin{center}
-\makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{Damped driven vector field}}%
+\makebox[\textwidth][c]{\includegraphics[width=1.32\textwidth]{Damped driven vector field}}%
 \captionof{figure}{Vector field of a driven system}\label{labelname}%
 \end{center}
 
-%
-\newpage
+
+\paragraph{Terminal velocity}
+The system reaches its terminal velocity when the average power input by the torque is equal to the average power loss from friction. Average values are used since the system oscillates about the average terminal velocity line. Using an interval of $10s$ to average over, for large a large t, should yield an accurate average velocity.
+
+\vspace{14pt}
+$\frac{\int_{t}^{t + 10} \theta'(t) \, dt}{10}$
+\vspace{14pt}
+
+this yields the average terminal velocity of 4.0 rad/s. This is calculated in the 1\_joint\_problem code. 
+
+Averaged over a long period of time at terminal velocity, the angular acceleration of the system is zero, and the $m_1gLcos(\theta(t))$ term averages to zero over multiple full rotations. The leftover equation is therefore
+
+\vspace{14pt}
+\centering $B\theta'(t)_{av} = \frac{\theta_{app}(t)}{m_1L^2}$ \\
+\vspace{14pt}
+Plugging in values, \\
+\vspace{14pt}
+\centering $0.5(Ns/kg*m)*4.0(rad/s) = \frac{50Nm}{25kgm^2}$ \\
+\vspace{14pt}
+
+This shows that the terminal velocity is an inherent property of this second-order system. 
+
 \paragraph{Under-Powered Motor} 
 When the motor does not have enough power to counter the force of gravity, it will not start spinning the mass. However, the wells of the vector field can be escaped with enough potential or kinetic energy. This will result in the mass rotating forever. Notice that the centers of the wells are slightly ahead of  $-\pi/2 + 2\pi n$, at an angular velocity of zero. When the system is in the center of a well, the torque exerted by the motor and the torque exerted by gravity cancel out. The arm is left skewed from the vertical.
+
+The 
+
 \vspace{14pt}
 
 \centering
@@ -289,14 +313,14 @@ Friction & 0.2 \\
 \centering On this plot, three initial positions are set. The orange and blue cases do not have enough initial potential energy to escape the well. The orange case starts vertically downwards, while the blue one starts at $-3\pi/4$ radians. The green line starts at $-\pi$ radians and manages to escape the well. Once it does, the mass rotates forever. 
 
 \begin{center}
-\makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{underpowered different positions.png}}%
+\makebox[\textwidth][c]{\includegraphics[width=1.32\textwidth]{underpowered different positions.png}}%
 \captionof{figure}{Vector field of an under-powered system, with differing initial positions}\label{labelname}%
 \end{center}
 
 \centering On this plot, three initial velocities are set, while the initial position is always horizontal. The orange and blue cases do not have enough initial kinetic energy to clear the vertical and escape the well. The orange spiral remains relatively round and the blue spiral displays an anomaly when it first falls into the well. It almost clears the vertical, but has slightly too little energy to do so, so it slowly falls back down into the well. With a slightly higher initial velocity, the green line clears the well and rotates perpetually. 
 
 \begin{center}
-\makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{underpowered positive velocity.png}}%
+\makebox[\textwidth][c]{\includegraphics[width=1.32\textwidth]{underpowered positive velocity.png}}%
 \captionof{figure}{Vector field of an under-powered system, with differing positive initial velocities}\label{labelname}%
 \end{center}
 
@@ -304,10 +328,9 @@ Friction & 0.2 \\
 \centering When the initial velocity is negative, the torque of the motor opposes the direction of motion, and the system decelerates. Depending on its trajectory, the system will either fall into a well, or it will cross the x-intercept only once (come to a full stop). If it crosses the x-intercept once, it operates with the same dynamics as Figure 3. Notice that the orange and green trajectories avoid the well and cross the x-intercept. Their x-intercept positions are such that they have enough potential energy to begin spinning. The blue trajectory falls into a well. 
 
 \begin{center}
-\makebox[\textwidth][c]{\includegraphics[width=1.4\textwidth]{underpowered negative.png}}%
+\makebox[\textwidth][c]{\includegraphics[width=1.32\textwidth]{underpowered negative.png}}%
 \captionof{figure}{Vector field of an under-powered system, with differing negative initial velocities}\label{labelname}%
 \end{center}
-
 
 \section{The robot arm}
 \centering This section covers the derivation and simulation of the equations of motion for an arm with an arbitrary number of joints. The robot arm is modeled as a collection of 1-joint problems organized sequentially:

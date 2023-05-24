@@ -117,8 +117,11 @@ def init():
     return line, dots
 
 ax.axis('equal')
-txt = ax.text(0.5, 0.95, '', transform=ax.transAxes)
+txt = ax.text(0.01, 0.95, '', transform=ax.transAxes)
 #####################################################################################################
+################ Find the average terminal velocity of the system with the final and initial positions, 10 seconds apart ##########################################
+
+av_terminal_velocity = (sol.y[0,len(sol.y[0])-1] - sol.y[0,(len(sol.y[0])-1001)])/10.00 #yields average terminal velocity
 
 
 
@@ -134,7 +137,7 @@ def animate(i):
     y = [0, y1[i]]
     line.set_data(x, y) # make a line between (0,0) and (x1[i], y1[i])
     dots.set_data(x, y) # make dots at (0,0) and (x1[i], y1[i])
-    txt.set_text('Time = ' + '{:4.1f}'.format(i*(simulationDuration/len(x1)))+ 's' + "  Velocity: " + '{:4.1f}'.format(sol.y[1,i]) + " rad/s") # display time and velocity 
+    txt.set_text('Time = ' + '{:4.1f}'.format(i*(simulationDuration/len(x1)))+ 's' + "  Velocity: " + '{:4.1f}'.format(sol.y[1,i]) + " rad/s  average terminal velocity: " + '{:4.1f}'.format(av_terminal_velocity) + " rad/s") # display time and velocity 
     return line, dots, txt
 
 # call the animator.  blit=True means only re-draw the parts that have changed.s
